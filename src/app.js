@@ -10,15 +10,19 @@ app.use(cors());
 const repositories = [];
 
 app.post("/repositories", (req, res) => {
-    const { title, url, techs } = req.body;
-    const repository = { id: uuid(), title, url, techs }
-
-    repositories.push(repository);
+    const { title, url, techs, likes } = req.body;
+    const repository = { 
+        id: uuid(), 
+        title, 
+        url, 
+        techs,
+        likes
+    }
+    repositories.push(repository);    
     return res.status(201).json(repository);
 });
 
 app.get("/repositories", (req, res) => {
-    // TODO
     return res.json(repositories)
                 .status(200);
 });
@@ -26,24 +30,30 @@ app.get("/repositories", (req, res) => {
 app.put("/repositories/:id", (req, res) => {    
     const { id } = req.params;
     const { title, url, techs } = req.body;
-    
-    const repoIndex = repositories.findIndex(repo => repo.id === id);
 
-    if(repoIndex < 0) {
+    const index = repositories.findIndex(repo => repo.id === id);
+
+    console.log(id);
+    console.log(index);
+
+    if(index < 0) {
         return res.status(400)
             .json({ error: 'Repository not found.'});
     }
 
-    const repo = { id, title, url, techs, likes: 0 };
-    repositories[repoIndex] = repo;
+    repositories[index].title = title;
+    repositories[index].url = url;
+    repositories[index].techs = techs;
+
+    return res.send(204);
 });
 
 app.delete("/repositories/:id", (req, res) => {
 
     const { id } = req.params;
-    const repoIndex = repositories.findIndex(repo => repo.id === id);
+    const index = repositories.findIndex(repo => repo.id === id);
 
-    if(repoIndex < 0) {
+    if(index < 0) {
         return res.status(400)
             .json({ error: 'Repository not found.'});        
     }
@@ -55,14 +65,16 @@ app.delete("/repositories/:id", (req, res) => {
 app.post("/repositories/:id/like", (req, res) => {    
     const { id } = req.params;
 
-    const repoIndex = repositories.findIndex(repo => repo.id === id);
+    const index = repositories.findIndex(repo => repo.id === id);
 
-    if(repoIndex < 0) {
+    if(index < 0) {
         return res.status(400)
             .json({ error: 'Repository not found.'});
     }
 
-    repositories[repoIndex].likes = repositories[repoIndex].likes + 1;
+    repositories[index].likes = repositories[index].likes + 1;
+
+    return res.status(201).send(repositories[index]);
 });
 
 module.exports = app;
