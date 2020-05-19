@@ -28,11 +28,11 @@ app.post("/repositories", (req, res) => {
         title, 
         url, 
         techs,
-        likes
+        likes: 0
     }
     repositories.push(repository);
 
-    return res.status(201).json(repository);
+    return res.status(201).send(repository);
 });
 
 app.get("/repositories", (req, res) => {
