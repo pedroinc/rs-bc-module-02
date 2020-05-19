@@ -46,7 +46,7 @@ app.put("/repositories/:id", validateRepository, (req, res) => {
     repositories[req.repoIndex].url = url;
     repositories[req.repoIndex].techs = techs;
 
-    return res.status(204).send();
+    return res.status(200).send(repositories[req.repoIndex]);
 });
 
 app.delete("/repositories/:id", validateRepository, (req, res) => {
